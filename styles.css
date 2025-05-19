@@ -331,6 +331,116 @@ footer {
     text-decoration: underline;
 }
 
+/* Quick Links Section */
+.quick-links {
+    padding: var(--spacing-lg) 0;
+    margin-top: var(--spacing-lg);
+}
+
+.section-description {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto var(--spacing-lg) auto;
+    color: var(--light-text);
+}
+
+.quick-links-container {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    box-shadow: var(--box-shadow);
+}
+
+.add-link-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: var(--spacing-lg);
+    flex-wrap: wrap;
+}
+
+.add-link-form input {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px 12px;
+    border: 1px solid #dfe1e5;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+}
+
+.add-link-form input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 1px var(--primary-color);
+}
+
+.link-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid #eeeeee;
+    transition: var(--transition);
+}
+
+.link-item:hover {
+    background-color: #f8f9fa;
+}
+
+.link-item:last-child {
+    border-bottom: none;
+}
+
+.link-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.link-favicon {
+    width: 16px;
+    height: 16px;
+}
+
+.link-title {
+    font-weight: 500;
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.link-title:hover {
+    text-decoration: underline;
+}
+
+.link-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.link-action-btn {
+    background: none;
+    border: none;
+    color: var(--lightest-text);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    transition: var(--transition);
+}
+
+.link-action-btn:hover {
+    background-color: rgba(0,0,0,0.05);
+    color: var(--text-color);
+}
+
+.delete-btn:hover {
+    color: var(--danger-color);
+}
+
+#no-links-message {
+    text-align: center;
+    color: var(--lightest-text);
+    padding: var(--spacing-md);
+}
+
 /* Modal */
 .modal {
     display: none;

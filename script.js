@@ -275,6 +275,146 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 600);
         });
     });
+    
+    // Quick Links management
+    const addLinkBtn = document.getElementById('add-link-btn');
+    const linkNameInput = document.getElementById('link-name');
+    const linkUrlInput = document.getElementById('link-url');
+    const linksContainer = document.getElementById('links-container');
+    const noLinksMessage = document.getElementById('no-links-message');
+    
+    // Load saved links from localStorage
+    function loadSavedLinks() {
+        const savedLinks = JSON.parse(localStorage.getItem('docent-links') || '[]');
+        if (savedLinks.length > 0) {
+            noLinksMessage.style.display = 'none';
+            savedLinks.forEach(link => addLinkToDOM(link));
+        } else {
+            noLinksMessage.style.display = 'block';
+        }
+    }
+    
+    // Add a new link to the DOM
+    function addLinkToDOM(link) {
+        const linkItem = document.createElement('div');
+        linkItem.className = 'link-item';
+        linkItem.dataset.id = link.id;
+        
+        linkItem.innerHTML = `
+            <div class="link-info">
+                <img src="https://www.google.com/s2/favicons?domain=${link.url}" alt="" class="link-favicon">
+                <a href="${link.url}" target="_blank" class="link-title">${link.name}</a>
+            </div>
+            <div class="link-actions">
+                <button class="link-action-btn copy-btn" title="Copiar enlace">
+                    <i class="fas fa-copy"></i>
+                </button>
+                <button class="link-action-btn delete-btn" title="Eliminar enlace">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `;
+        
+        // Add event listeners for actions
+        linkItem.querySelector('.copy-btn').addEventListener('click', function() {
+            navigator.clipboard.writeText(link.url)
+                .then(() => {
+                    // Show temporary success message
+                    const copyBtn = this;
+                    const originalHtml = copyBtn.innerHTML;
+                    copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+                    copyBtn.style.color = 'var(--secondary-color)';
+                    setTimeout(() => {
+                        copyBtn.innerHTML = originalHtml;
+                        copyBtn.style.color = '';
+                    }, 1500);
+                });
+        });
+        
+        linkItem.querySelector('.delete-btn').addEventListener('click', function() {
+            deleteLink(link.id);
+        });
+        
+        linksContainer.appendChild(linkItem);
+    }
+    
+    // Save links to localStorage
+    function saveLinks(links) {
+        localStorage.setItem('docent-links', JSON.stringify(links));
+    }
+    
+    // Delete a link
+    function deleteLink(id) {
+        const linkElement = document.querySelector(`.link-item[data-id="${id}"]`);
+        if (linkElement) {
+            linkElement.classList.add('fade-out');
+            setTimeout(() => {
+                linkElement.remove();
+                
+                // Update localStorage
+                let links = JSON.parse(localStorage.getItem('docent-links') || '[]');
+                links = links.filter(link => link.id !== id);
+                saveLinks(links);
+                
+                // Show message if no links remain
+                if (links.length === 0) {
+                    noLinksMessage.style.display = 'block';
+                }
+            }, 300);
+        }
+    }
+    
+    // Add link event handler
+    addLinkBtn.addEventListener('click', function() {
+        const name = linkNameInput.value.trim();
+        const url = linkUrlInput.value.trim();
+        
+        if (name && url) {
+            let formattedUrl = url;
+            // Add http:// if not present
+            if (!/^https?:\/\//i.test(url)) {
+                formattedUrl = 'https://' + url;
+            }
+            
+            // Create new link object
+            const newLink = {
+                id: Date.now().toString(),
+                name: name,
+                url: formattedUrl
+            };
+            
+            // Add to DOM
+            addLinkToDOM(newLink);
+            
+            // Save to localStorage
+            const links = JSON.parse(localStorage.getItem('docent-links') || '[]');
+            links.push(newLink);
+            saveLinks(links);
+            
+            // Clear inputs
+            linkNameInput.value = '';
+            linkUrlInput.value = '';
+            
+            // Hide no links message
+            noLinksMessage.style.display = 'none';
+        }
+    });
+    
+    // Load saved links on page load
+    loadSavedLinks();
+    
+    // Allow pressing Enter in input fields to add link
+    linkUrlInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            addLinkBtn.click();
+        }
+    });
+    
+    linkNameInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            linkUrlInput.focus();
+        }
+    });
 });
 
 const searchBar = document.getElementById('resource-search');
